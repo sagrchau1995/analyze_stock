@@ -1,0 +1,47 @@
+# Maven / Java
+target/
+pom.xml.tag
+dependency-reduced-pom.xml
+release.properties
+pom.xml.releaseBackup
+
+# Compiled classes / packages
+*.class
+*.jar
+*.war
+*.ear
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+*.ipr
+*.iws
+out/
+
+# Generated sources
+generated-sources/
+generated-test-sources/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# Logs
+*.log
+logs/
+
+# macOS
+.DS_Store
+
+# Environment / keys
+*.keystore
+.env
+
+# Node
+node_modules/
+
+# Misc
+coverage/
+*.coverage
