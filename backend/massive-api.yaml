@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  title: Massive API
+  description: OpenAPI description for the Massive API (Tickers)
+  version: 1.0.0
+servers:
+  - url: https://api.massive.com
+paths:
+  /v3/reference/tickers:
+    get:
+      summary: Retrieve a comprehensive list of ticker symbols.
+      parameters:
+        - name: ticker
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: market
+          in: query
+          schema:
+            type: string
+        - name: exchange
+          in: query
+          schema:
+            type: string
+        - name: cusip
+          in: query
+          schema:
+            type: string
+        - name: cik
+          in: query
+          schema:
+            type: string
+        - name: date
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: active
+          in: query
+          schema:
+            type: boolean
+        - name: ticker.gte
+          in: query
+          schema:
+            type: string
+        - name: ticker.gt
+          in: query
+          schema:
+            type: string
+        - name: ticker.lte
+          in: query
+          schema:
+            type: string
+        - name: ticker.lt
+          in: query
+          schema:
+            type: string
+        - name: order
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          schema:
+            type: string
+        - name: apiKey
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TickerResponse'
+components:
+  schemas:
+    TickerResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+        next_url:
+          type: string
+        request_id:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TickerResult'
+        status:
+          type: string
+    TickerResult:
+      type: object
+      properties:
+        active:
+          type: boolean
+        cik:
+          type: string
+        composite_figi:
+          type: string
+        currency_name:
+          type: string
+        last_updated_utc:
+          type: string
+        locale:
+          type: string
+        market:
+          type: string
+        name:
+          type: string
+        primary_exchange:
+          type: string
+        share_class_figi:
+          type: string
+        ticker:
+          type: string
+        type:
+          type: string
