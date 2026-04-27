@@ -1,121 +1,95 @@
 import React from 'react';
-import { TrendingUp, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, TrendingUp, TrendingDown } from 'lucide-react';
 
-const TickerTypeList = ({ type, stocks, isExpanded, toggleTypeExpand }) => {
-  const visibleStocks = isExpanded ? stocks : stocks.slice(0, 10);
-  const hiddenCount = stocks.length - 10;
+const CHIP_CLASS = {
+  blue: 'chip chip-blue',
+  green: 'chip chip-green',
+  purple: 'chip chip-purple',
+  amber: 'chip chip-blue',   // fallback to blue for amber
+  gray: 'chip chip-gray',
+};
+
+const TickerTypeList = ({ type, stocks, isExpanded, toggleTypeExpand, colorClass = 'blue' }) => {
+  const visibleStocks = isExpanded ? stocks : stocks.slice(0, 12);
+  const hiddenCount = stocks.length - 12;
 
   return (
-    <div style={{ marginBottom: '2rem' }}>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: '1rem',
-        paddingBottom: '0.5rem',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-      }}>
-        <h2 style={{ margin: 0, color: '#e2e8f0', fontSize: '1.25rem' }}>
-          {type || 'Unknown'} <span style={{ color: '#64748b', fontSize: '0.875rem' }}>({stocks.length})</span>
-        </h2>
+    <div className="type-section">
+      {/* Section Header */}
+      <div
+        className="type-header"
+        role="button"
+        tabIndex={0}
+        onClick={() => toggleTypeExpand(type)}
+        onKeyDown={e => e.key === 'Enter' && toggleTypeExpand(type)}
+      >
+        <div className="type-title">
+          <span className={CHIP_CLASS[colorClass] || 'chip chip-blue'} style={{ fontSize: '0.7rem' }}>
+            {type || 'Unknown'}
+          </span>
+          <span className="type-count">{stocks.length.toLocaleString()}</span>
+        </div>
+        <ChevronDown
+          size={16}
+          className={`type-chevron${isExpanded ? ' expanded' : ''}`}
+        />
       </div>
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-        gap: '1rem',
-        marginBottom: hiddenCount > 0 ? '1rem' : 0
-      }}>
-        {visibleStocks.map((stock) => (
-          <div key={stock.ticker} className="glass-card" style={{
-            padding: '1rem',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            border: '1px solid rgba(59, 130, 246, 0.2)',
-            background: 'rgba(30, 41, 59, 0.4)'
-          }}>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <div style={{
-                fontSize: '1.125rem',
-                fontWeight: 700,
-                color: '#3b82f6'
-              }}>
-                {stock.ticker}
-              </div>
-              <div style={{
-                fontSize: '0.875rem',
-                color: '#cbd5e1',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-              }}>
-                {stock.name}
-              </div>
-            </div>
-
-            <div style={{
-              display: 'flex',
-              gap: '0.5rem',
-              marginBottom: '0.75rem',
-              flexWrap: 'wrap'
-            }}>
-              <span className="category-tag" style={{ fontSize: '0.75rem' }}>
-                {stock.market}
-              </span>
-              {stock.locale && (
-                <span className="category-tag" style={{ fontSize: '0.75rem' }}>
-                  {stock.locale}
-                </span>
-              )}
-            </div>
-
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              fontSize: '0.875rem',
-              color: stock.active ? '#10b981' : '#ef4444'
-            }}>
-              <TrendingUp size={14} />
-              {stock.active ? 'Active' : 'Inactive'}
-            </div>
-          </div>
+      {/* Cards Grid */}
+      <div className="ticker-grid">
+        {visibleStocks.map(stock => (
+          <TickerCard key={stock.ticker} stock={stock} colorClass={colorClass} />
         ))}
       </div>
 
+      {/* Show more / less */}
       {hiddenCount > 0 && (
         <button
+          className="show-more-btn"
           onClick={() => toggleTypeExpand(type)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            padding: '0.75rem 1rem',
-            borderRadius: '0.5rem',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            background: 'rgba(15, 23, 42, 0.5)',
-            color: '#3b82f6',
-            cursor: 'pointer',
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            transition: 'all 0.3s ease'
-          }}
         >
-          {isExpanded ? (
-            <>
-              <ChevronUp size={16} />
-              Show less
-            </>
-          ) : (
-            <>
-              <ChevronDown size={16} />
-              Show {hiddenCount} more
-            </>
-          )}
+          {isExpanded
+            ? <><ChevronUp size={14} /> Show less</>
+            : <><ChevronDown size={14} /> Show {hiddenCount.toLocaleString()} more</>}
         </button>
       )}
     </div>
   );
 };
+
+function TickerCard({ stock, colorClass }) {
+  const chipClass = CHIP_CLASS[colorClass] || 'chip chip-blue';
+
+  return (
+    <div className="ticker-card" id={`ticker-${stock.ticker}`}>
+      <div className="card-symbol">{stock.ticker}</div>
+      <div className="card-name" title={stock.name}>{stock.name || '—'}</div>
+
+      <div className="card-footer">
+        <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+          {stock.market && (
+            <span className={chipClass}>{stock.market}</span>
+          )}
+          {stock.primaryExchange || stock.primary_exchange ? (
+            <span className="chip chip-gray">
+              {stock.primaryExchange || stock.primary_exchange}
+            </span>
+          ) : null}
+          {stock.currencyName || stock.currency_name ? (
+            <span className="chip chip-gray">
+              {stock.currencyName || stock.currency_name}
+            </span>
+          ) : null}
+        </div>
+
+        <div className={stock.active !== false ? 'card-active' : 'card-inactive'}>
+          {stock.active !== false
+            ? <><TrendingUp size={11} />Active</>
+            : <><TrendingDown size={11} />Inactive</>}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default TickerTypeList;

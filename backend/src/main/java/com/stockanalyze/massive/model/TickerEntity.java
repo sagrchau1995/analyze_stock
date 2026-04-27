@@ -168,4 +168,24 @@ public class TickerEntity {
         entity.setLastUpdatedUtc(result.getLast_updated_utc());
         return entity;
     }
+
+    /**
+     * Creates a TickerEntity from a Finnhub symbol response object.
+     * Finnhub fields: symbol → ticker, description → name, mic → primaryExchange,
+     * currency → currencyName, type → type.
+     */
+    public static TickerEntity fromFinnhubSymbol(FinnhubSymbol s) {
+        TickerEntity entity = new TickerEntity();
+        entity.setTicker(s.getSymbol());
+        entity.setName(s.getDescription() != null ? s.getDescription() : s.getSymbol());
+        entity.setMarket("stocks");
+        entity.setType(s.getType());
+        entity.setActive(true);
+        entity.setLocale("us");
+        entity.setCurrencyName(s.getCurrency());
+        entity.setPrimaryExchange(s.getMic());
+        entity.setCompositeFigi(s.getFigiComposite());
+        entity.setShareClassFigi(s.getShareClassFIGI());
+        return entity;
+    }
 }
