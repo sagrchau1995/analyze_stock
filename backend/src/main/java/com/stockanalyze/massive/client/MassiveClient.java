@@ -10,17 +10,17 @@ public interface MassiveClient {
 
     @GetMapping("/v3/reference/tickers")
     TickerResponse getTickers(
-            @RequestParam("ticker") String ticker,
-            @RequestParam("type") String type,
-            @RequestParam("market") String market,
-            @RequestParam("exchange") String exchange,
-            @RequestParam("cusip") String cusip,
-            @RequestParam("cik") String cik,
-            @RequestParam("date") String date,
-            @RequestParam("search") String search,
-            @RequestParam("active") Boolean active,
-            @RequestParam("limit") Integer limit,
-            @RequestParam("sort") String sort,
-            @RequestParam("order") String order,
-            @RequestParam("apiKey") String apiKey);
+            @RequestParam(value = "ticker", required = false) String ticker,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "market", required = false) String market,
+            @RequestParam(value = "exchange", required = false) String exchange,
+            @RequestParam(value = "cusip", required = false) String cusip,
+            @RequestParam(value = "cik", required = false) String cik,
+            @RequestParam(value = "date", required = false) String date,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "active", required = false) Boolean active,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "order", required = false) String order,
+            @RequestParam(value = "apiKey", required = false) String apiKey);
 }
